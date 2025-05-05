@@ -1,0 +1,121 @@
+/* Estilos para o modal compacto */
+.modal-content {
+    max-width: 550px;
+    padding: 1.5rem;
+}
+
+.pet-details-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.pet-details-image-compact {
+    width: 100%;
+    height: 220px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.pet-details-image-compact img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pet-details-info-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.pet-details-title {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.8rem;
+    text-align: center;
+}
+
+.pet-details-title h2 {
+    color: var(--primary-color);
+    margin-bottom: 0.3rem;
+    font-size: 1.8rem;
+}
+
+.pet-details-subtitle {
+    color: #666;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.pet-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.8rem;
+}
+
+.pet-info-item {
+    background-color: var(--light-bg);
+    padding: 0.8rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.info-value {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.pet-description {
+    background-color: var(--light-bg);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.pet-description h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #666;
+    text-align: center;
+}
+
+.pet-description p {
+    color: var(--text-color);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.modal-actions .button {
+    padding: 0.8rem 2rem;
+    background-color: #000000; /* Botão preto */
+}
+
+.modal-actions .button:hover {
+    background-color: #333333; /* Cor preta mais clara ao passar o mouse */
+}
+
+
+@media (max-width: 500px) {
+    .pet-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .pet-details-image-compact {
+        height: 180px;
+    }
+}

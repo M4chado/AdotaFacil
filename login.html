@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AdotaFácil - Login</title>
+        <link rel="stylesheet" href="log.css">
+        <link rel="stylesheet" href="notificacoes.css">
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="supabase-config.js"></script>
+        <script src="notificacoes.js"></script>
+        <script src="login.js" defer></script>
+    </head>
+<body>
+    <div class="container">
+        <div class="banner">
+            <h1>AdotaFácil</h1>
+            <div class="banner-footer">
+                <p>© 2025 AdotaFácil - Sistema de Adoção de Pets</p>
+            </div>
+        </div>
+        <div class="form-container">
+            <h2>Login</h2>
+            
+            <div class="success-message" id="success-message" style="display: none;">
+                Conta criada com sucesso! Agora você pode fazer login.
+            </div>
+            
+            <form class="form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="seu@email.com" required>
+                    <div class="error-message" id="login-email-error">Email inválido</div>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Senha</label>
+                    <div class="password-container">
+                        <input type="password" id="login-password" placeholder="Digite sua senha" required>
+                    </div>
+                    <div class="error-message" id="login-password-error">A senha é obrigatória</div>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+            
+            <div class="separator">
+                <span>ou</span>
+            </div>
+            
+            <button type="button" class="btn secondary-btn" id="redirect-register">Criar uma conta</button>
+        </div>
+    </div>
+</body>
+</html>

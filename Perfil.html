@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdotaFácil - Meu Perfil</title>
+    <link rel="stylesheet" href="ind.css">
+    <link rel="stylesheet" href="perfil.css">
+    <link rel="stylesheet" href="header-styles.css">
+    <script src="perfil.js" defer></script>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main class="container">
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <div class="profile-image-container">
+                    <img src="profile-placeholder.jpg" alt="Foto de Perfil" class="profile-image" id="profileImage">
+                    <button class="button upload-photo-btn" id="uploadPhotoBtn">Alterar Foto</button>
+                </div>
+                <div class="profile-navigation">
+                    <ul>
+                        <li class="profile-nav-item active" data-section="personal-info">Informações Pessoais</li>
+                        <li class="profile-nav-item" data-section="my-pets">Meus Pets</li>
+                        <li class="profile-nav-item" data-section="favorite-pets">Pets Favoritos</li>
+                        <li class="profile-nav-item" data-section="adoption-history">Histórico de Adoções</li>
+                        <li class="profile-nav-item" data-section="settings">Configurações</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="profile-content">
+                <section class="profile-section active" id="personal-info">
+                    <h2>Informações Pessoais</h2>
+                    <form class="profile-form" id="personalInfoForm">
+                        <div class="form-group">
+                            <label for="fullName">Nome Completo</label>
+                            <input type="text" id="fullName" name="fullName" value="Maria Silva">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="maria.silva@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefone</label>
+                            <input type="tel" id="phone" name="phone" value="(64) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Endereço</label>
+                            <input type="text" id="address" name="address" value="Rua das Flores, 123">
+                        </div>
+                        <div class="form-group">
+                            <label for="city">Cidade</label>
+                            <input type="text" id="city" name="city" value="Rio Verde">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">Estado</label>
+                            <input type="text" id="state" name="state" value="Goiás">
+                        </div>
+                        <div class="form-group">
+                            <label for="zipCode">CEP</label>
+                            <input type="text" id="zipCode" name="zipCode" value="75900-000">
+                        </div>
+                        <div class="form-group">
+                            <label for="bio">Sobre Mim</label>
+                            <textarea id="bio" name="bio" rows="4">Amante de animais e entusiasta da adoção responsável. Tenho dois cães e um gato adotados.</textarea>
+                        </div>
+                        <button type="submit" class="button">Salvar Alterações</button>
+                    </form>
+                </section>
+                
+                <section class="profile-section" id="my-pets">
+                    <h2>Meus Pets</h2>
+                    <div class="my-pets-container">
+                        <div class="no-pets-message" id="noPetsMessage">
+                            <p>Você ainda não cadastrou nenhum pet.</p>
+                            <a href="cadastrapet.html" class="button">Cadastrar um Pet</a>
+                        </div>
+                        
+                        <div class="pets-grid" id="myPetsGrid">
+                            <!-- Pet cards will be generated here via JavaScript -->
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="profile-section" id="favorite-pets">
+                    <h2>Pets Favoritos</h2>
+                    <div class="pets-grid" id="favoritePetsGrid">
+                        <!-- Favorite pet cards will be generated here via JavaScript -->
+                    </div>
+                </section>
+                
+                <section class="profile-section" id="adoption-history">
+                    <h2>Histórico de Adoções</h2>
+                    <div class="adoption-timeline" id="adoptionTimeline">
+                        <!-- Adoption history will be generated here via JavaScript -->
+                    </div>
+                </section>
+                
+                <section class="profile-section" id="settings">
+                    <h2>Configurações</h2>
+                    <form class="profile-form" id="settingsForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Senha Atual</label>
+                            <input type="password" id="currentPassword" name="currentPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">Nova Senha</label>
+                            <input type="password" id="newPassword" name="newPassword">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirmar Nova Senha</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword">
+                        </div>
+                        
+                        <h3>Preferências de Notificação</h3>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="emailNotifications" name="emailNotifications" checked>
+                            <label for="emailNotifications">Receber notificações por email</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="newPetNotifications" name="newPetNotifications" checked>
+                            <label for="newPetNotifications">Novos pets disponíveis para adoção</label>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="adoptionUpdates" name="adoptionUpdates" checked>
+                            <label for="adoptionUpdates">Atualizações sobre adoções</label>
+                        </div>
+                        
+                        <button type="submit" class="button">Salvar Configurações</button>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+</body>
+</html>

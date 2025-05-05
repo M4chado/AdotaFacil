@@ -1,0 +1,258 @@
+/* Profile Page Styles */
+.profile-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+/* Sidebar Styles */
+.profile-sidebar {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    height: fit-content;
+}
+
+.profile-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profile-image {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.upload-photo-btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.profile-navigation ul {
+    list-style: none;
+}
+
+.profile-nav-item {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.profile-nav-item:hover {
+    background-color: var(--light-bg);
+}
+
+.profile-nav-item.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+/* Content Styles */
+.profile-content {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+}
+
+.profile-section {
+    display: none;
+}
+
+.profile-section.active {
+    display: block;
+}
+
+.profile-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--light-bg);
+}
+
+/* Form Styles */
+.profile-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-group input {
+    width: auto;
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+}
+
+/* Styles that span full width */
+.form-group:last-of-type,
+.profile-form h3,
+.profile-form .button {
+    grid-column: 1 / span 2;
+}
+
+/* My Pets Section */
+.my-pets-container {
+    margin-top: 1rem;
+}
+
+.no-pets-message {
+    text-align: center;
+    padding: 3rem;
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius);
+}
+
+.no-pets-message p {
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+/* Adoption History */
+.adoption-timeline {
+    margin-top: 1.5rem;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 60px;
+    top: 30px;
+    bottom: -30px;
+    width: 2px;
+    background-color: var(--light-bg);
+}
+
+.timeline-date {
+    text-align: center;
+    padding: 0.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    height: fit-content;
+}
+
+.timeline-content {
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+}
+
+.timeline-content h3 {
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.timeline-content p {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-sidebar {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1.5rem;
+        align-items: center;
+    }
+    
+    .profile-image-container {
+        margin-bottom: 0;
+    }
+    
+    .profile-navigation ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .profile-nav-item {
+        margin-bottom: 0;
+        padding: 0.7rem 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-sidebar {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group:last-of-type,
+    .profile-form h3,
+    .profile-form .button {
+        grid-column: 1;
+    }
+    
+    .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .timeline-item:not(:last-child)::before {
+        display: none;
+    }
+    
+    .timeline-date {
+        margin-bottom: 0.5rem;
+    }
+}

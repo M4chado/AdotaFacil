@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdotaFácil - Cadastre um pet para adoção</title>
+    <link rel="stylesheet" href="cadpet.css">
+    <link rel="stylesheet" href="modelo.css">
+    <link rel="stylesheet" href="header-styles.css">
+    <script src="cadastrapet.js" defer></script>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <section class="page-title">
+        <div class="container">
+            <h1>Cadastre um Pet para Adoção</h1>
+            <p>Ajude um animal a encontrar um novo lar preenchendo o formulário abaixo.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                Pet cadastrado com sucesso! Obrigado por ajudar a encontrar um novo lar para esse animal.
+            </div>
+            
+            <h2 class="form-title">Informações do Pet</h2>
+            
+            <form id="petForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petName" class="required">Nome do Pet</label>
+                        <input type="text" id="petName" name="petName" required>
+                        <div class="error-text" id="petNameError">Por favor, informe o nome do pet.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petAge" class="required">Idade</label>
+                        <input type="text" id="petAge" name="petAge" placeholder="Ex: 2 anos" required>
+                        <div class="error-text" id="petAgeError">Por favor, informe a idade do pet.</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petType" class="required">Tipo</label>
+                        <select id="petType" name="petType" required>
+                            <option value="">Selecione...</option>
+                            <option value="dog">Cachorro</option>
+                            <option value="cat">Gato</option>
+                            <option value="other">Outro</option>
+                        </select>
+                        <div class="error-text" id="petTypeError">Por favor, selecione o tipo do pet.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petBreed" class="required">Raça</label>
+                        <input type="text" id="petBreed" name="petBreed" required>
+                        <div class="error-text" id="petBreedError">Por favor, informe a raça do pet.</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petSize" class="required">Porte</label>
+                        <select id="petSize" name="petSize" required>
+                            <option value="">Selecione...</option>
+                            <option value="small">Pequeno</option>
+                            <option value="medium">Médio</option>
+                            <option value="large">Grande</option>
+                        </select>
+                        <div class="error-text" id="petSizeError">Por favor, selecione o porte do pet.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petGender" class="required">Sexo</label>
+                        <select id="petGender" name="petGender" required>
+                            <option value="">Selecione...</option>
+                            <option value="male">Macho</option>
+                            <option value="female">Fêmea</option>
+                        </select>
+                        <div class="error-text" id="petGenderError">Por favor, selecione o sexo do pet.</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petCity" class="required">Cidade</label>
+                        <input type="text" id="petCity" name="petCity" required>
+                        <div class="error-text" id="petCityError">Por favor, informe a cidade do pet.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petState" class="required">Estado</label>
+                        <select id="petState" name="petState" required>
+                            <option value="">Selecione...</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                        <div class="error-text" id="petStateError">Por favor, selecione o estado do pet.</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="petStatus" class="required">Status</label>
+                        <select id="petStatus" name="petStatus" required>
+                            <option value="">Selecione...</option>
+                            <option value="available" selected>Disponível</option>
+                            <option value="adopted">Adotado</option>
+                        </select>
+                        <div class="error-text" id="petStatusError">Por favor, selecione o status do pet.</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="petVaccinated">Vacinado?</label>
+                        <select id="petVaccinated" name="petVaccinated">
+                            <option value="">Selecione...</option>
+                            <option value="yes">Sim</option>
+                            <option value="no">Não</option>
+                            <option value="partial">Parcialmente</option>
+                            <option value="unknown">Não sei informar</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petPhoto" class="required">Foto do Pet</label>
+                    <div class="file-input-wrapper" id="dropArea">
+                        <i>📷</i>
+                        <p>Clique ou arraste a foto do pet aqui</p>
+                        <span>Formato JPG, PNG • Tamanho máximo: 5MB</span>
+                        <input type="file" id="petPhoto" name="petPhoto" class="file-input" accept="image/*" required>
+                        <img id="previewImage" class="preview-image" alt="Preview">
+                    </div>
+                    <div class="error-text" id="petPhotoError">Por favor, selecione uma foto do pet.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="petDescription" class="required">Descrição</label>
+                    <textarea id="petDescription" name="petDescription" placeholder="Descreva características do pet, temperamento, necessidades especiais, etc." required></textarea>
+                    <div class="error-text" id="petDescriptionError">Por favor, informe uma descrição para o pet.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additionalInfo">Informações Adicionais (opcional)</label>
+                    <textarea id="additionalInfo" name="additionalInfo" placeholder="Histórico médico, comportamento com outros animais, etc."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ownerContact" class="required">Contato do Responsável</label>
+                    <input type="text" id="ownerContact" name="ownerContact" placeholder="Telefone ou e-mail para contato" required>
+                    <div class="error-text" id="ownerContactError">Por favor, informe um contato válido.</div>
+                    <div class="help-text">Este contato será exibido para pessoas interessadas em adotar o pet.</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="button button-secondary" id="resetForm">Limpar</button>
+                    <button type="submit" class="button" id="submitForm">Cadastrar Pet</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+</body>
+</html>

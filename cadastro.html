@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdotaFácil - Cadastro</title>
+    <link rel="stylesheet" href="log.css">
+    <link rel="stylesheet" href="notificacoes.css">
+    <!-- Importação da biblioteca do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="notificacoes.js"></script>
+    <script src="cadastro.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div class="banner">
+            <h1>AdotaFácil</h1>
+            <div class="banner-footer">
+                <p>© 2025 AdotaFácil - Sistema de Adoção de Pets</p>
+            </div>
+        </div>
+        <div class="form-container">
+            <h2>Cadastre-se</h2>
+            
+            <div class="success-message" id="success-message" style="display: none;">
+                Conta criada com sucesso! Você será redirecionado para o login.
+            </div>
+            
+            <form class="form active" id="register-form">
+                <div class="form-group">
+                    <label for="register-name">Nome Completo</label>
+                    <input type="text" id="register-name" placeholder="Digite seu nome completo" required>
+                    <div class="error-message" id="register-name-error">Nome é obrigatório</div>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="seu@email.com" required>
+                    <div class="error-message" id="register-email-error">Email inválido</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="register-password">Senha</label>
+                        <div class="password-container">
+                            <input type="password" id="register-password" placeholder="Crie uma senha forte" required>
+                        </div>
+                        <div class="error-message" id="register-password-error">A senha deve ter pelo menos 8 caracteres</div>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="register-phone">Telefone</label>
+                        <input type="tel" id="register-phone" placeholder="(00) 00000-0000" required>
+                        <div class="error-message" id="register-phone-error">Telefone inválido</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="register-city">Cidade</label>
+                        <input type="text" id="register-city" placeholder="Sua cidade" required>
+                        <div class="error-message" id="register-city-error">Cidade é obrigatória</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-state">Estado</label>
+                        <select id="register-state" required>
+                            <option value="">Selecione</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                        <div class="error-message" id="register-state-error">Estado é obrigatório</div>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Criar Conta</button>
+                
+                <div class="separator">
+                    <span>ou</span>
+                </div>
+                
+                <button type="button" class="btn secondary-btn" id="redirect-login">Já tenho uma conta</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

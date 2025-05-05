@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdotaFácil - Encontre seu novo amigo</title>
+    <link rel="stylesheet" href="ind.css">
+    <link rel="stylesheet" href="modelo.css">
+    <link rel="stylesheet" href="header-styles.css">
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <section class="hero" style="background-image: url('Imagens/cachorro.jpg');">
+        <div class="container">
+            <h1>Encontre seu novo melhor amigo</h1>
+            <p>Adotar um animal é um ato de amor. Temos diversos pets esperando por um lar cheio de carinho.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section class="filter-section" id="pets">
+            <h2>Pets para Adoção</h2>
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-size="all">Todos</div>
+                <div class="filter-tab" data-size="small">Porte Pequeno</div>
+                <div class="filter-tab" data-size="medium">Porte Médio</div>
+                <div class="filter-tab" data-size="large">Porte Grande</div>
+                <div class="filter-tab" data-type="dog">Cães</div>
+                <div class="filter-tab" data-type="cat">Gatos</div>
+                <div class="filter-tab" data-type="other">Outros</div>
+            </div>
+            <div class="pets-grid" id="petsGrid">
+            </div>
+        </section>
+    </main>
+   
+    <div id="footer-container"></div>
+
+    <div class="modal" id="petModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <div class="pet-details" id="petDetails">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
