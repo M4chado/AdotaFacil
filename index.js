@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             document.getElementById('footer-container').innerHTML = data;
         });
+        
+    // Inicializar a página e carregar os pets do Supabase
+    initPage();
 });
 
 // Função para verificar o status de login e atualizar o cabeçalho
@@ -51,176 +54,6 @@ function checkLoginStatus() {
         }
     });
 }
-const pets = [
-    {
-        id: 1,
-        name: "Max",
-        type: "dog",
-        breed: "Labrador",
-        age: "2 anos",
-        size: "large",
-        gender: "Macho",
-        description: "Max é um labrador muito carinhoso e brincalhão. Ele adora correr e brincar no parque. É um cão muito inteligente e já sabe alguns comandos básicos.",
-        location: "São Paulo, SP",
-        vaccinated: true,
-        neutered: true,
-        image: "/api/placeholder/300/300"
-    },
-    {
-        id: 2,
-        name: "Luna",
-        type: "cat",
-        breed: "Siamês",
-        age: "1 ano",
-        size: "small",
-        gender: "Fêmea",
-        description: "Luna é uma gatinha siamesa muito dócil e carinhosa. Ela adora ficar no colo e ronronar. É muito limpa e já está treinada para usar a caixa de areia.",
-        location: "Rio de Janeiro, RJ",
-        vaccinated: true,
-        neutered: true,
-        image: "/api/placeholder/301/300"
-    },
-    {
-        id: 3,
-        name: "Thor",
-        type: "dog",
-        breed: "Rottweiler",
-        age: "3 anos",
-        size: "large",
-        gender: "Macho",
-        description: "Thor é um rottweiler muito dócil e protetor. Ele é ótimo com crianças e muito fiel aos seus donos. Precisa de espaço para se exercitar.",
-        location: "Belo Horizonte, MG",
-        vaccinated: true,
-        neutered: false,
-        image: "/api/placeholder/302/300"
-    },
-    {
-        id: 4,
-        name: "Nina",
-        type: "cat",
-        breed: "Persa",
-        age: "4 anos",
-        size: "small",
-        gender: "Fêmea",
-        description: "Nina é uma gata persa muito calma e independente. Ela gosta de ter seu próprio espaço mas também aprecia carinho. Tem pelagem longa que precisa de escovação regular.",
-        location: "Curitiba, PR",
-        vaccinated: true,
-        neutered: true,
-        image: "/api/placeholder/303/300"
-    },
-    {
-        id: 5,
-        name: "Rex",
-        type: "dog",
-        breed: "Beagle",
-        age: "1 ano",
-        size: "medium",
-        gender: "Macho",
-        description: "Rex é um beagle muito energético e brincalhão. Ele adora farejar e explorar novos ambientes. Precisa de bastante atividade física.",
-        location: "Salvador, BA",
-        vaccinated: true,
-        neutered: false,
-        image: "imagens/teste.png"
-    },
-    {
-        id: 6,
-        name: "Mel",
-        type: "dog",
-        breed: "Poodle",
-        age: "5 anos",
-        size: "small",
-        gender: "Fêmea",
-        description: "Mel é uma poodle muito inteligente e afetuosa. Ela já está treinada e adora aprender novos truques. É ótima companhia para qualquer família.",
-        location: "Brasília, DF",
-        vaccinated: true,
-        neutered: true,
-        image: "/api/placeholder/305/300"
-    },
-    {
-        id: 7,
-        name: "Simba",
-        type: "cat",
-        breed: "Maine Coon",
-        age: "2 anos",
-        size: "medium",
-        gender: "Macho",
-        description: "Simba é um maine coon muito sociável e brincalhão. Ele se dá bem com outros animais e adora brincar com bolinhas. É um gato grande e majestoso.",
-        location: "Porto Alegre, RS",
-        vaccinated: true,
-        neutered: true,
-        image: "/api/placeholder/306/300"
-    },
-    {
-        id: 8,
-        name: "Lola",
-        type: "other",
-        breed: "Coelho",
-        age: "1 ano",
-        size: "small",
-        gender: "Fêmea",
-        description: "Lola é uma coelha muito dócil e curiosa. Ela gosta de ser acariciada e explorar seu ambiente. Precisa de espaço para se exercitar.",
-        location: "Fortaleza, CE",
-        vaccinated: true,
-        neutered: false,
-        image: "/api/placeholder/307/300"
-    },
-    {
-        id: 9,
-        name: "Bob",
-        type: "dog",
-        breed: "Bulldog Francês",
-        age: "3 anos",
-        size: "medium",
-        gender: "Macho",
-        description: "Bob é um bulldog francês muito carinhoso e tranquilo. Ele adora dormir e receber carinho. É ótimo para quem procura um cão menos agitado.",
-        location: "Recife, PE",
-        vaccinated: true,
-        neutered: true,
-        image: "/api/placeholder/308/300"
-    },
-    {
-        id: 10,
-        name: "Mia",
-        type: "cat",
-        breed: "Ragdoll",
-        age: "2 anos",
-        size: "medium",
-        gender: "Fêmea",
-        description: "Mia é uma ragdoll muito dócil e carinhosa. Ela adora ficar no colo e ser acariciada. É uma gata muito tranquila e afetuosa.",
-        location: "Belém, PA",
-        vaccinated: true,
-        neutered: true,
-        image: "/api/placeholder/309/300"
-    },
-    {
-        id: 11,
-        name: "Zeus",
-        type: "dog",
-        breed: "Pastor Alemão",
-        age: "4 anos",
-        size: "large",
-        gender: "Macho",
-        description: "Zeus é um pastor alemão muito inteligente e leal. Ele é ótimo cão de guarda e muito protetor com sua família. Precisa de exercícios regulares.",
-        location: "Goiânia, GO",
-        vaccinated: true,
-        neutered: false,
-        image: "/api/placeholder/310/300"
-    },
-    {
-        id: 12,
-        name: "Pipoca",
-        type: "other",
-        breed: "Hamster",
-        age: "6 meses",
-        size: "small",
-        gender: "Fêmea",
-        description: "Pipoca é uma hamster muito ativa e curiosa. Ela adora correr em sua rodinha e explorar tubos. É perfeita para quem quer um pet pequeno.",
-        location: "Manaus, AM",
-        vaccinated: false,
-        neutered: false,
-        image: "/api/placeholder/311/300"
-    }
-];
 
 // DOM elements
 let petsGrid;
@@ -235,16 +68,25 @@ let currentFilter = {
     type: null
 };
 
-// Initialize page
-document.addEventListener('DOMContentLoaded', () => {
-    // Get DOM elements after page is loaded
+// Array para armazenar os pets buscados do Supabase
+let petsData = [];
+
+// Inicializar página
+async function initPage() {
+    // Get DOM elements
     petsGrid = document.getElementById('petsGrid');
     filterTabs = document.querySelectorAll('.filter-tab');
     petModal = document.getElementById('petModal');
     closeModal = document.getElementById('closeModal');
     petDetails = document.getElementById('petDetails');
     
-    renderPets(pets);
+    // Adicionar loading state
+    petsGrid.innerHTML = '<div class="loading">Carregando pets disponíveis...</div>';
+    
+    // Buscar pets do Supabase
+    await fetchPetsFromSupabase();
+    
+    // Inicializar filtros
     initFilterTabs();
     
     // Close modal event
@@ -260,17 +102,46 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = 'auto'; // Restore scrolling
         }
     });
-});
+}
 
-// Render pets based on filters
+// Buscar pets do Supabase - Adaptado para seus campos específicos
+async function fetchPetsFromSupabase() {
+    try {
+        // Mostrar estado de carregamento
+        petsGrid.innerHTML = '<div class="loading">Carregando pets disponíveis...</div>';
+        
+        // Fazer a consulta ao Supabase na tabela de pets
+        const { data, error } = await supabase
+            .from('pets')
+            .select('*')
+            .order('id', { ascending: true });
+        
+        if (error) {
+            console.error('Erro ao buscar pets:', error);
+            petsGrid.innerHTML = '<div class="error">Não foi possível carregar os pets. Tente novamente mais tarde.</div>';
+            return;
+        }
+        
+        // Armazenar os dados dos pets
+        petsData = data;
+        
+        // Renderizar os pets
+        renderPets(petsData);
+    } catch (err) {
+        console.error('Erro ao conectar com Supabase:', err);
+        petsGrid.innerHTML = '<div class="error">Erro de conexão. Verifique sua internet e tente novamente.</div>';
+    }
+}
+
+// Render pets based on filters - Adaptado para seus campos específicos
 function renderPets(petsArray) {
     petsGrid.innerHTML = '';
     
     const filteredPets = petsArray.filter(pet => {
-        if (currentFilter.size !== 'all' && pet.size !== currentFilter.size) {
+        if (currentFilter.size !== 'all' && pet.porte !== currentFilter.size) {
             return false;
         }
-        if (currentFilter.type && pet.type !== currentFilter.type) {
+        if (currentFilter.type && pet.tipo !== currentFilter.type) {
             return false;
         }
         return true;
@@ -287,6 +158,7 @@ function renderPets(petsArray) {
     });
 }
 
+// Adaptado para usar seus campos específicos
 function createPetCard(pet) {
     const card = document.createElement('div');
     card.className = 'pet-card';
@@ -298,13 +170,19 @@ function createPetCard(pet) {
         'large': 'Grande'
     };
     
+    // Usar a URL da imagem do pet se existir, senão usar um placeholder
+    const imageUrl = pet.foto || `/api/placeholder/300/300?id=${pet.id}`;
+    
+    // Calcular idade para exibição
+    const idade = pet.idade ? `${pet.idade} anos` : "Idade não informada";
+    
     card.innerHTML = `
         <div class="pet-image">
-            <img src="${pet.image}" alt="${pet.name}">
+            <img src="${imageUrl}" alt="${pet.nome}">
         </div>
         <div class="pet-info">
-            <h3 class="pet-name">${pet.name}</h3>
-            <p class="pet-breed">${pet.breed} • ${pet.age} • Porte ${sizeText[pet.size]}</p>
+            <h3 class="pet-name">${pet.nome}</h3>
+            <p class="pet-breed">${pet.raca || 'Sem raça definida'} • ${idade} • Porte ${sizeText[pet.porte] || pet.porte}</p>
             <div class="pet-actions">
                 <a href="#" class="pet-action-btn view-details" data-id="${pet.id}">Ver Detalhes</a>
                 <button class="favorite-btn" data-id="${pet.id}">♡</button>
@@ -322,9 +200,67 @@ function createPetCard(pet) {
     card.querySelector('.favorite-btn').addEventListener('click', function() {
         this.classList.toggle('active');
         this.textContent = this.classList.contains('active') ? '♥' : '♡';
+        
+        // Aqui você pode implementar a lógica para salvar os pets favoritos
+        // no localStorage ou no Supabase se o usuário estiver logado
+        toggleFavorite(pet.id);
     });
     
     return card;
+}
+
+// Função para alternar favorito
+async function toggleFavorite(petId) {
+    const currentUser = sessionStorage.getItem('currentUser') ? JSON.parse(sessionStorage.getItem('currentUser')) : null;
+    
+    if (!currentUser) {
+        // Se não estiver logado, redirecionar para login
+        alert('Você precisa estar logado para adicionar um pet aos favoritos.');
+        return;
+    }
+    
+    try {
+        // Verificar se o pet já está nos favoritos
+        const { data, error } = await supabase
+            .from('favoritos')
+            .select('*')
+            .eq('id_usu', currentUser.id)
+            .eq('id_pet', petId);
+            
+        if (error) {
+            console.error('Erro ao verificar favoritos:', error);
+            return;
+        }
+        
+        if (data && data.length > 0) {
+            // Se já está nos favoritos, remover
+            const { error: deleteError } = await supabase
+                .from('favoritos')
+                .delete()
+                .eq('id_usu', currentUser.id)
+                .eq('id_pet', petId);
+                
+            if (deleteError) {
+                console.error('Erro ao remover favorito:', deleteError);
+            }
+        } else {
+            // Se não está nos favoritos, adicionar
+            const { error: insertError } = await supabase
+                .from('favoritos')
+                .insert([
+                    { 
+                        id_usu: currentUser.id, 
+                        id_pet: petId 
+                    }
+                ]);
+                
+            if (insertError) {
+                console.error('Erro ao adicionar favorito:', insertError);
+            }
+        }
+    } catch (err) {
+        console.error('Erro ao processar favorito:', err);
+    }
 }
 
 // Initialize filter tabs
@@ -350,14 +286,14 @@ function initFilterTabs() {
             }
             
             // Re-render pets with new filter
-            renderPets(pets);
+            renderPets(petsData);
         });
     });
 }
 
-// Função openPetDetails atualizada para incluir porte na linha de subtítulo
+// Função openPetDetails - Adaptada para seus campos específicos
 function openPetDetails(petId) {
-    const pet = pets.find(p => p.id === petId);
+    const pet = petsData.find(p => p.id === petId);
     if (!pet) return;
     
     // Map size to display text
@@ -374,49 +310,82 @@ function openPetDetails(petId) {
         'other': 'Outro'
     };
     
+    // Usar a URL da imagem do pet se existir, senão usar um placeholder
+    const imageUrl = pet.foto || `/api/placeholder/300/300?id=${pet.id}`;
+    
+    // Calcular idade para exibição
+    const idade = pet.idade ? `${pet.idade} anos` : "Idade não informada";
+    
     petDetails.innerHTML = `
         <div class="pet-details-compact">
             <div class="pet-details-image-compact">
-                <img src="${pet.image}" alt="${pet.name}">
+                <img src="${imageUrl}" alt="${pet.nome}">
             </div>
             
             <div class="pet-details-info-compact">
                 <div class="pet-details-title">
-                    <h2>${pet.name}</h2>
-                    <p class="pet-details-subtitle">${typeText[pet.type]} • ${pet.breed} • ${pet.age} • Porte ${sizeText[pet.size]}</p>
+                    <h2>${pet.nome}</h2>
+                    <p class="pet-details-subtitle">${typeText[pet.tipo] || pet.tipo || 'Pet'} • ${pet.raca || 'Sem raça definida'} • ${idade} • Porte ${sizeText[pet.porte] || pet.porte}</p>
                 </div>
                 
                 <div class="pet-info-grid">
                     <div class="pet-info-item">
                         <span class="info-label">Sexo</span>
-                        <span class="info-value">${pet.gender}</span>
+                        <span class="info-value">${pet.sexo || 'Não informado'}</span>
                     </div>
                     <div class="pet-info-item">
                         <span class="info-label">Localização</span>
-                        <span class="info-value">${pet.location}</span>
-                    </div>
-                    <div class="pet-info-item">
-                        <span class="info-label">Vacinado</span>
-                        <span class="info-value">${pet.vaccinated ? 'Sim' : 'Não'}</span>
-                    </div>
-                    <div class="pet-info-item">
-                        <span class="info-label">Castrado</span>
-                        <span class="info-value">${pet.neutered ? 'Sim' : 'Não'}</span>
+                        <span class="info-value">${pet.cidade || 'Não informada'}, ${pet.estado || ''}</span>
                     </div>
                 </div>
                 
                 <div class="pet-description">
                     <h3>Sobre</h3>
-                    <p>${pet.description}</p>
+                    <p>${pet.descricao || 'Sem descrição disponível.'}</p>
+                </div>
+                
+                <div class="pet-info-additional">
+                    <h3>Informações Adicionais</h3>
+                    <p>${pet.informacao || 'Sem informações adicionais.'}</p>
+                </div>
+                
+                <div class="pet-contact">
+                    <h3>Contato</h3>
+                    <p>${pet.contato || 'Entre em contato para mais informações.'}</p>
                 </div>
                 
                 <div class="modal-actions">
-                    <a href="#" class="button">Tenho Interesse</a>
+                    <a href="#" class="button interest-btn" data-id="${pet.id}">Tenho Interesse</a>
                 </div>
             </div>
         </div>
     `;
     
+    // Adicionar evento ao botão de interesse
+    const interestBtn = petDetails.querySelector('.interest-btn');
+    interestBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleInterest(pet.id);
+    });
+    
     petModal.style.display = 'block';
     document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+}
+
+// Função para lidar com o interesse em adotar
+function handleInterest(petId) {
+    const currentUser = sessionStorage.getItem('currentUser') ? JSON.parse(sessionStorage.getItem('currentUser')) : null;
+    
+    if (!currentUser) {
+        // Redirecionar para página de login se não estiver logado
+        alert('Você precisa estar logado para demonstrar interesse. Redirecionando para o login...');
+        window.location.href = 'login.html?redirect=index.html&action=interest&petId=' + petId;
+        return;
+    }
+    
+    // Se estiver logado, entrar em contato com o dono do pet
+    // Esta parte pode ser adaptada para enviar mensagem, email ou outra forma de contato
+    alert('Interesse registrado! O responsável pelo pet será notificado e entrará em contato com você em breve.');
+    petModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
 }

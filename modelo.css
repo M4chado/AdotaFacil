@@ -1,121 +1,195 @@
-/* Estilos para o modal compacto */
-.modal-content {
-    max-width: 550px;
-    padding: 1.5rem;
+/* Estilos para o cabeçalho com altura reduzida */
+header {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    /* Reduzir a altura do cabeçalho */
+    padding: 0.5rem 0;
 }
 
-.pet-details-compact {
+.header-content {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.pet-details-image-compact {
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
     width: 100%;
-    height: 220px;
-    border-radius: var(--border-radius);
-    overflow: hidden;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.pet-details-image-compact img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.pet-details-info-compact {
+.logo-container {
     display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
+    align-items: center;
 }
 
-.pet-details-title {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.8rem;
-    text-align: center;
+.logo-container h1 {
+    margin: 0;
+    font-size: 1.6rem; /* Reduzir levemente o tamanho da fonte */
 }
 
-.pet-details-title h2 {
-    color: var(--primary-color);
-    margin-bottom: 0.3rem;
-    font-size: 1.8rem;
+.logo-container span {
+    color: var(--primary-color, #3498db);
+    font-weight: bold;
 }
 
-.pet-details-subtitle {
-    color: #666;
-    font-size: 1rem;
+.paw-icon {
+    width: 18px; /* Reduzir levemente o tamanho do ícone */
+    height: 18px;
+    margin-right: 0.5rem;
+    fill: var(--primary-color, #3498db);
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.nav-menu {
     display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.pet-info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.8rem;
+.nav-menu li {
+    margin-left: 1.5rem;
 }
 
-.pet-info-item {
-    background-color: var(--light-bg);
-    padding: 0.8rem;
-    border-radius: 8px;
-    text-align: center;
+.user-greeting {
+    color: var(--primary-color, #3498db);
+    font-weight: 600;
+    padding: 0.3rem 0; /* Reduzir padding */
+    display: inline-block;
+    font-size: 0.95rem; /* Reduzir levemente o tamanho da fonte */
 }
 
-.info-label {
-    display: block;
-    font-size: 0.8rem;
-    color: #666;
-    margin-bottom: 0.3rem;
-}
-
-.info-value {
+/* Estilo para o botão de login/cadastro */
+.login-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 0.4rem 1rem; /* Reduzir padding */
+    border-radius: 25px;
+    text-decoration: none;
     font-weight: 500;
-    color: var(--text-color);
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 2px solid #3498db;
+    font-size: 0.9rem; /* Reduzir levemente o tamanho da fonte */
 }
 
-.pet-description {
-    background-color: var(--light-bg);
-    padding: 1rem;
-    border-radius: 8px;
+.login-btn:hover {
+    background-color: white;
+    color: #3498db;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.pet-description h3 {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    color: #666;
-    text-align: center;
+/* Ícone para o botão de login */
+.login-icon {
+    display: inline-block;
+    width: 14px; /* Reduzir levemente o tamanho do ícone */
+    height: 14px;
+    margin-right: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='white' d='M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-.pet-description p {
-    color: var(--text-color);
-    font-size: 0.95rem;
-    line-height: 1.5;
+.login-btn:hover .login-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%233498db' d='M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z'/%3E%3C/svg%3E");
 }
 
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 0.5rem;
+/* Ajuste para o menu quando o usuário está logado */
+.nav-link.active {
+    color: var(--primary-color, #3498db);
+    font-weight: 600;
 }
 
-.modal-actions .button {
-    padding: 0.8rem 2rem;
-    background-color: #000000; /* Botão preto */
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s ease;
+    font-size: 0.95rem; /* Reduzir levemente o tamanho da fonte */
 }
 
-.modal-actions .button:hover {
-    background-color: #333333; /* Cor preta mais clara ao passar o mouse */
+.nav-link:hover {
+    color: var(--primary-color, #3498db);
 }
 
+/* Correção para a seção hero - centralizar o texto */
+.hero {
+    position: relative;
+    background-color: #4AC4F3;
+    color: white;
+    text-align: center; /* Centralizar o texto */
+    padding: 4rem 2rem;
+    overflow: hidden;
+    min-height: 400px;
+}
 
-@media (max-width: 500px) {
-    .pet-info-grid {
-        grid-template-columns: 1fr 1fr;
+.hero .container {
+    position: relative;
+    z-index: 2;
+    max-width: 800px; /* Reduzir largura máxima para centralizar */
+    margin: 0 auto;
+    width: 100%; /* Usar largura total do container para centralização */
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Adicionando a imagem do cachorro como background para todo o banner */
+.hero {
+    background-image: linear-gradient(rgba(74, 196, 243, 0.7), rgba(74, 196, 243, 0.7)), url('Imagens/cachorro.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Remover o pseudo-elemento anterior que mantinha a imagem apenas à direita */
+.hero::after {
+    content: none;
+}
+
+/* Ajuste para dispositivos móveis */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        padding: 0.5rem;
     }
     
-    .pet-details-image-compact {
-        height: 180px;
+    .nav-menu {
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-menu li {
+        margin: 0.3rem;
+    }
+    
+    .hero {
+        padding: 3rem 1rem;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
     }
 }

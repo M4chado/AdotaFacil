@@ -1,4 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Verificar se o Supabase está disponível
+    if (typeof supabase === 'undefined') {
+        console.warn('Supabase ainda não está inicializado. Aguardando inicialização...');
+        // Tentar novamente em 1 segundo
+        setTimeout(() => {
+            if (typeof supabase === 'undefined') {
+                console.error('Erro: Supabase não foi inicializado após 1 segundo.');
+            } else {
+                console.log('✅ Supabase inicializado com sucesso após espera!');
+            }
+        }, 1000);
+    } else {
+        console.log('✅ Supabase já está inicializado!');
+    }
+
     // Carregar o cabeçalho
     fetch('header.html')
         .then(response => response.text())
@@ -58,11 +73,13 @@ document.addEventListener('DOMContentLoaded', function() {
         petGender: document.getElementById('petGenderError'),
         petCity: document.getElementById('petCityError'),
         petState: document.getElementById('petStateError'),
-        petStatus: document.getElementById('petStatusError'),
         petPhoto: document.getElementById('petPhotoError'),
         petDescription: document.getElementById('petDescriptionError'),
         ownerContact: document.getElementById('ownerContactError')
     };
+    
+    // Variável para armazenar a imagem codificada em base64
+    let petPhotoBase64 = '';
     
     // Handle file selection
     fileInput.addEventListener('change', function() {
@@ -92,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Function to handle file preview
+    // Function to handle file preview and convert to base64
     function handleFileSelect(file) {
         if (!file) return;
         
@@ -109,11 +126,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Create preview
+        // Create preview and convert to base64
         const reader = new FileReader();
         reader.onload = function(e) {
             previewImage.src = e.target.result;
             previewImage.style.display = 'block';
+            petPhotoBase64 = e.target.result; // Armazenar a imagem em base64
             hideError(errorElements.petPhoto);
         };
         reader.readAsDataURL(file);
@@ -124,24 +142,178 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         if (validateForm()) {
-            // In a real application, here you would send data to the server
-            // For this example, we'll just show a success message
+            // Mostrar indicador de carregamento
+            submitFormBtn.disabled = true;
+            submitFormBtn.textContent = 'Cadastrando...';
             
-            // Show success message
-            successMessage.style.display = 'block';
-            
-            // Scroll to top to see the message
-            window.scrollTo({
-                top: successMessage.offsetTop - 100,
-                behavior: 'smooth'
-            });
-            
-            // Clear form after 2 seconds
-            setTimeout(function() {
-                resetForm();
-            }, 2000);
+            // Salvar no banco de dados
+            savePetToDatabase();
         }
     });
+    
+    // Função para salvar o pet no banco de dados
+    function savePetToDatabase() {
+        try {
+            // Verificar se o objeto supabase está disponível ou esperar que esteja disponível
+            if (typeof supabase === 'undefined') {
+                // Mostrar notificação de aguarde
+                showNotification('Conectando ao banco de dados...', 'info');
+                
+                // Esperar 1 segundo e tentar novamente
+                setTimeout(() => {
+                    if (typeof supabase === 'undefined') {
+                        console.error('Erro: Supabase não está inicializado após tentativa de espera.');
+                        showNotification('Erro de conexão. Tente novamente mais tarde.', 'error');
+                        submitFormBtn.disabled = false;
+                        submitFormBtn.textContent = 'Cadastrar Pet';
+                    } else {
+                        // Agora o Supabase está disponível
+                        console.log('Supabase inicializado após espera.');
+                        continueWithSavingPet();
+                    }
+                }, 1000);
+                return;
+            }
+            
+            // Supabase já está disponível, proceder com o cadastro
+            continueWithSavingPet();
+        } catch (err) {
+            console.error('Erro inesperado:', err);
+            showNotification('Ocorreu um erro inesperado.', 'error');
+            submitFormBtn.disabled = false;
+            submitFormBtn.textContent = 'Cadastrar Pet';
+        }
+        
+        // Função para continuar o processo de salvar o pet
+        function continueWithSavingPet() {
+            // Obter dados do usuário logado
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser || !currentUser.id) {
+                console.error('Erro: Usuário não está logado ou ID não disponível.');
+                showNotification('Sessão expirada. Faça login novamente.', 'error');
+                submitFormBtn.disabled = false;
+                submitFormBtn.textContent = 'Cadastrar Pet';
+                return;
+            }
+            
+            // Coletar dados do formulário
+            const petData = {
+                nome: document.getElementById('petName').value.trim(),
+                idade: parseInt(document.getElementById('petAge').value.trim()) || 0,
+                tipo: document.getElementById('petType').value,
+                raca: document.getElementById('petBreed').value.trim(),
+                porte: document.getElementById('petSize').value,
+                sexo: document.getElementById('petGender').value,
+                cidade: document.getElementById('petCity').value.trim(),
+                estado: document.getElementById('petState').value,
+                foto: petPhotoBase64, // URL ou base64 da foto
+                descricao: document.getElementById('petDescription').value.trim(),
+                informacao: document.getElementById('additionalInfo').value.trim() || null,
+                contato: document.getElementById('ownerContact').value.trim(),
+                usuario_id: currentUser.id
+            };
+            
+            // Enviar para o Supabase
+            supabase
+                .from('pets')
+                .insert(petData)
+                .then(response => {
+                    const { data, error } = response;
+                    
+                    if (error) {
+                        console.error('Erro ao cadastrar pet:', error);
+                        showNotification('Erro ao cadastrar pet. Tente novamente.', 'error');
+                        submitFormBtn.disabled = false;
+                        submitFormBtn.textContent = 'Cadastrar Pet';
+                        return;
+                    }
+                    
+                    // Cadastro bem-sucedido
+                    console.log('✅ Pet cadastrado com sucesso!', data);
+                    
+                    // Mostrar mensagem de sucesso
+                    successMessage.style.display = 'block';
+                    
+                    // Resetar o botão
+                    submitFormBtn.disabled = false;
+                    submitFormBtn.textContent = 'Cadastrar Pet';
+                    
+                    // Rolar para o topo para ver a mensagem
+                    window.scrollTo({
+                        top: successMessage.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Limpar formulário após 2 segundos
+                    setTimeout(function() {
+                        resetForm();
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Erro na requisição:', err);
+                    showNotification('Falha na comunicação com o servidor.', 'error');
+                    submitFormBtn.disabled = false;
+                    submitFormBtn.textContent = 'Cadastrar Pet';
+                });
+        }
+    }
+    
+    // Função para mostrar notificação
+    function showNotification(message, type = 'success') {
+        // Criar elemento de notificação
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        // Adicionar ao corpo do documento
+        document.body.appendChild(notification);
+        
+        // Mostrar notificação
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Esconder e remover após 3 segundos
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+    
+    // Adicionar estilos para notificações
+    const style = document.createElement('style');
+    style.textContent = `
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.error {
+            background-color: #f44336;
+        }
+        
+        .notification.info {
+            background-color: #2196F3;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    `;
+    document.head.appendChild(style);
     
     // Reset form button
     resetFormBtn.addEventListener('click', function() {
@@ -162,7 +334,6 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 'petGender', errorElement: errorElements.petGender, message: 'Por favor, selecione o sexo do pet.' },
             { id: 'petCity', errorElement: errorElements.petCity, message: 'Por favor, informe a cidade do pet.' },
             { id: 'petState', errorElement: errorElements.petState, message: 'Por favor, selecione o estado do pet.' },
-            { id: 'petStatus', errorElement: errorElements.petStatus, message: 'Por favor, selecione o status do pet.' },
             { id: 'petDescription', errorElement: errorElements.petDescription, message: 'Por favor, informe uma descrição para o pet.' },
             { id: 'ownerContact', errorElement: errorElements.ownerContact, message: 'Por favor, informe um contato válido.' }
         ];
@@ -178,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Photo validation
-        if (!fileInput.files.length) {
+        if (!petPhotoBase64) {
             showError(errorElements.petPhoto, 'Por favor, selecione uma foto do pet.');
             isValid = false;
         }
@@ -202,6 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
         petForm.reset();
         previewImage.style.display = 'none';
         previewImage.src = '';
+        petPhotoBase64 = ''; // Limpar a imagem base64
         successMessage.style.display = 'none';
         
         // Hide all error messages
