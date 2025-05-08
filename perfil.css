@@ -14,26 +14,17 @@
     padding: 2rem;
     height: fit-content;
 }
+.profile-icon {
+    font-size: 140px;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
 
 .profile-image-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 2rem;
-}
-
-.profile-image {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid var(--primary-color);
     margin-bottom: 1rem;
-}
-
-.upload-photo-btn {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
 }
 
 .profile-navigation ul {

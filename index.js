@@ -314,12 +314,12 @@ function openPetDetails(petId) {
     const imageUrl = pet.foto || `/api/placeholder/300/300?id=${pet.id}`;
     
     // Calcular idade para exibição
-    const idade = pet.idade ? `${pet.idade} anos` : "Idade não informada";
+     const idade = pet.idade ? `${pet.idade} anos` : "Idade não informada";;
     
     petDetails.innerHTML = `
         <div class="pet-details-compact">
-            <div class="pet-details-image-compact">
-                <img src="${imageUrl}" alt="${pet.nome}">
+            <div class="pet-details-image-compact" style="height: auto; max-height: 500px;">
+                <img src="${imageUrl}" alt="${pet.nome}" style="height: auto; object-fit: contain; max-height: 500px;">
             </div>
             
             <div class="pet-details-info-compact">

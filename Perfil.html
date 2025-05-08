@@ -6,6 +6,8 @@
     <title>AdotaFácil - Meu Perfil</title>
     <link rel="stylesheet" href="ind.css">
     <link rel="stylesheet" href="perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="perfil.js" defer></script>
@@ -17,15 +19,16 @@
         <div class="profile-container">
             <div class="profile-sidebar">
                 <div class="profile-image-container">
-                    <img src="profile-placeholder.jpg" alt="Foto de Perfil" class="profile-image" id="profileImage">
-                    <button class="button upload-photo-btn" id="uploadPhotoBtn">Alterar Foto</button>
+                    <div class="profile-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
                 </div>
                 <div class="profile-navigation">
                     <ul>
-                        <li class="profile-nav-item active" data-section="personal-info">Informações Pessoais</li>
-                        <li class="profile-nav-item" data-section="my-pets">Meus Pets</li>
-                        <li class="profile-nav-item" data-section="favorite-pets">Pets Favoritos</li>
-                        <li class="profile-nav-item" data-section="settings">Alterar Senha</li>
+                        <li class="profile-nav-item active" data-section="personal-info"><i class="fas fa-user"></i> Informações Pessoais</li>
+                        <li class="profile-nav-item" data-section="my-pets"><i class="fas fa-dog"></i> Meus Pets</li>
+                        <li class="profile-nav-item" data-section="favorite-pets"><i class="fas fa-heart"></i> Pets Favoritos</li>
+                        <li class="profile-nav-item" data-section="settings"><i class="fas fa-lock"></i> Alterar Senha</li>
                     </ul>
                 </div>
             </div>

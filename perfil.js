@@ -664,8 +664,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (viewDetailsBtn) {
             viewDetailsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Abrir modal com detalhes do pet (você pode implementar isso depois)
-                showNotification(`Detalhes do pet ID: ${pet.id} serão implementados em breve.`);
+                // Usar a nova função openPetDetails
+                openPetDetails(pet.id);
             });
         }
         
@@ -715,6 +715,162 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             console.error('Erro ao remover favorito:', err);
             showNotification('Erro ao remover o pet dos favoritos.', 'error');
+        }
+    }
+    
+    // Função para abrir os detalhes do pet quando o usuário clicar em "Ver Detalhes"
+    async function openPetDetails(petId) {
+        try {
+            // Buscar os detalhes completos do pet no Supabase
+            const { data: pet, error } = await supabase
+                .from('pets')
+                .select('*')
+                .eq('id', petId)
+                .single();
+                
+            if (error) {
+                throw error;
+            }
+            
+            if (!pet) {
+                showNotification('Pet não encontrado.', 'error');
+                return;
+            }
+            
+            // Criar o modal se ele não existir
+            let petModal = document.getElementById('petModal');
+            if (!petModal) {
+                petModal = document.createElement('div');
+                petModal.id = 'petModal';
+                petModal.className = 'modal';
+                
+                petModal.innerHTML = `
+                    <div class="modal-content">
+                        <span class="close-modal" id="closeModal">&times;</span>
+                        <div class="pet-details" id="petDetails"></div>
+                    </div>
+                `;
+                
+                document.body.appendChild(petModal);
+                
+                // Adicionar evento para fechar o modal
+                const closeModal = document.getElementById('closeModal');
+                closeModal.addEventListener('click', () => {
+                    petModal.style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Restaurar rolagem
+                });
+                
+                // Fechar o modal se clicar fora do conteúdo
+                window.addEventListener('click', (e) => {
+                    if (e.target === petModal) {
+                        petModal.style.display = 'none';
+                        document.body.style.overflow = 'auto'; // Restaurar rolagem
+                    }
+                });
+            }
+            
+            const petDetails = document.getElementById('petDetails');
+            
+            // Map size to display text
+            const sizeText = {
+                'small': 'Pequeno',
+                'medium': 'Médio',
+                'large': 'Grande'
+            };
+            
+            // Map type to display text
+            const typeText = {
+                'dog': 'Cachorro',
+                'cat': 'Gato',
+                'other': 'Outro'
+            };
+            
+            // Usar a URL da imagem do pet se existir, senão usar um placeholder
+            const imageUrl = pet.foto || `/api/placeholder/300/300?id=${pet.id}`;
+            
+            // Calcular idade para exibição
+            const idade = pet.idade ? `${pet.idade} anos` : "Idade não informada";
+            
+            petDetails.innerHTML = `
+                <div class="pet-details-compact">
+                    <div class="pet-details-image-compact" style="height: auto; max-height: 500px;">
+                        <img src="${imageUrl}" alt="${pet.nome}" style="height: auto; object-fit: contain; max-height: 500px;">
+                    </div>
+                    
+                    <div class="pet-details-info-compact">
+                        <div class="pet-details-title">
+                            <h2>${pet.nome}</h2>
+                            <p class="pet-details-subtitle">${typeText[pet.tipo] || pet.tipo || 'Pet'} • ${pet.raca || 'Sem raça definida'} • ${idade} • Porte ${sizeText[pet.porte] || pet.porte}</p>
+                        </div>
+                        
+                        <div class="pet-info-grid">
+                            <div class="pet-info-item">
+                                <span class="info-label">Sexo</span>
+                                <span class="info-value">${pet.sexo || 'Não informado'}</span>
+                            </div>
+                            <div class="pet-info-item">
+                                <span class="info-label">Localização</span>
+                                <span class="info-value">${pet.cidade || 'Não informada'}, ${pet.estado || ''}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pet-description">
+                            <h3>Sobre</h3>
+                            <p>${pet.descricao || 'Sem descrição disponível.'}</p>
+                        </div>
+                        
+                        <div class="pet-info-additional">
+                            <h3>Informações Adicionais</h3>
+                            <p>${pet.informacao || 'Sem informações adicionais.'}</p>
+                        </div>
+                        
+                        <div class="pet-contact">
+                            <h3>Contato</h3>
+                            <p>${pet.contato || 'Entre em contato para mais informações.'}</p>
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <a href="#" class="button interest-btn" data-id="${pet.id}">Tenho Interesse</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Adicionar evento ao botão de interesse
+            const interestBtn = petDetails.querySelector('.interest-btn');
+            interestBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                handleInterest(pet.id);
+            });
+            
+            // Mostrar o modal e impedir a rolagem do body
+            petModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+        } catch (error) {
+            console.error('Erro ao buscar detalhes do pet:', error);
+            showNotification('Não foi possível carregar os detalhes do pet.', 'error');
+        }
+    }
+
+    // Função para lidar com o interesse em adotar
+    function handleInterest(petId) {
+        const currentUser = sessionStorage.getItem('currentUser') ? JSON.parse(sessionStorage.getItem('currentUser')) : null;
+        
+        if (!currentUser) {
+            // Redirecionar para página de login se não estiver logado
+            showNotification('Você precisa estar logado para demonstrar interesse.', 'error');
+            return;
+        }
+        
+        // Mostrar mensagem de interesse registrado
+        showNotification('Interesse registrado! O responsável pelo pet será notificado e entrará em contato com você em breve.');
+        
+        // Fechar o modal
+        const petModal = document.getElementById('petModal');
+        if (petModal) {
+            petModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
     }
     
@@ -817,9 +973,164 @@ document.addEventListener("DOMContentLoaded", () => {
             font-size: 1.5rem;
             transition: all 0.3s ease;
         }
+        
         .favorite-btn:hover {
             transform: scale(1.2);
         }
     `;
     document.head.appendChild(style);
+    
+    // Adicione o CSS para o modal
+    const modalStyle = document.createElement('style');
+    modalStyle.textContent = `
+        /* Estilos para o modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            margin: 5% auto;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 10;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        /* Estilos para os detalhes do pet */
+        .pet-details-compact {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .pet-details-image-compact {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .pet-details-image-compact img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            max-height: 500px;
+        }
+        
+        .pet-details-info-compact {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        
+        .pet-details-title {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.8rem;
+        }
+        
+        .pet-details-title h2 {
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+            font-size: 1.8rem;
+        }
+        
+        .pet-details-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .pet-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.8rem;
+        }
+        
+        .pet-info-item {
+            background-color: var(--light-bg);
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            display: block;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .pet-description, .pet-info-additional, .pet-contact {
+            background-color: var(--light-bg);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .pet-description h3, .pet-info-additional h3, .pet-contact h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .pet-description p, .pet-info-additional p, .pet-contact p {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        
+        .modal-actions .button {
+            padding: 0.8rem 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .pet-info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .modal-content {
+                padding: 1rem;
+                margin: 10% auto;
+            }
+        }
+    `;
+    document.head.appendChild(modalStyle);
 });
