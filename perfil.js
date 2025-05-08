@@ -91,6 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // Carregar os pets do usuário
             loadUserPets(userData.id);
+            
+            // Carregar os pets favoritos do usuário
+            loadFavoritePets();
         }
     }
     
@@ -368,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const state = document.getElementById('state').value;
             
             // Obter o ID do usuário atual
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const currentUser = sessionStorage.getItem('currentUser') ? JSON.parse(sessionStorage.getItem('currentUser')) : null;
             if (!currentUser || !currentUser.id) {
                 showNotification('Usuário não identificado. Faça login novamente.', 'error');
                 return;
@@ -553,8 +556,167 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    // Carregar exemplos de pets favoritos
-    loadFavoritePets();
+    // Carregar pets favoritos do usuário
+    async function loadFavoritePets() {
+        const favoritePetsGrid = document.getElementById('favoritePetsGrid');
+        
+        if (!favoritePetsGrid) return;
+        
+        // Obter o ID do usuário atual
+        const currentUser = sessionStorage.getItem('currentUser') ? JSON.parse(sessionStorage.getItem('currentUser')) : null;
+        
+        if (!currentUser || !currentUser.id) {
+            favoritePetsGrid.innerHTML = '<div class="error-message">Você precisa estar logado para ver seus pets favoritos.</div>';
+            return;
+        }
+        
+        // Mostrar indicador de carregamento
+        favoritePetsGrid.innerHTML = '<div class="loading-indicator">Carregando seus pets favoritos...</div>';
+        
+        try {
+            // Primeiro, buscar os IDs dos pets favoritos na tabela 'favoritos'
+            const { data: favoritesData, error: favoritesError } = await supabase
+                .from('favoritos')
+                .select('id_pet')
+                .eq('id_usu', currentUser.id);
+                
+            if (favoritesError) {
+                throw favoritesError;
+            }
+            
+            // Se não há pets favoritos
+            if (!favoritesData || favoritesData.length === 0) {
+                favoritePetsGrid.innerHTML = '<div class="no-favorites">Você ainda não adicionou nenhum pet aos favoritos.</div>';
+                return;
+            }
+            
+            // Extrair os IDs dos pets favoritos
+            const favoritePetIds = favoritesData.map(favorite => favorite.id_pet);
+            
+            // Buscar os detalhes completos dos pets favoritos
+            const { data: petsData, error: petsError } = await supabase
+                .from('pets')
+                .select('*')
+                .in('id', favoritePetIds);
+                
+            if (petsError) {
+                throw petsError;
+            }
+            
+            // Limpar o grid
+            favoritePetsGrid.innerHTML = '';
+            
+            // Criar cards para cada pet favorito
+            petsData.forEach(pet => {
+                createFavoritePetCard(pet, favoritePetsGrid);
+            });
+            
+            console.log('✅ Pets favoritos carregados com sucesso!');
+        } catch (error) {
+            console.error('Erro ao carregar pets favoritos:', error);
+            favoritePetsGrid.innerHTML = '<div class="error-message">Não foi possível carregar seus pets favoritos. Tente novamente mais tarde.</div>';
+        }
+    }
+
+    // Função para criar um card de pet favorito
+    function createFavoritePetCard(pet, container) {
+        // Mapear valores para texto de exibição
+        const sizeText = {
+            'small': 'Porte Pequeno',
+            'medium': 'Porte Médio',
+            'large': 'Porte Grande'
+        };
+        
+        const typeText = {
+            'dog': 'Cachorro',
+            'cat': 'Gato',
+            'other': 'Outro'
+        };
+        
+        // Calcular idade para exibição
+        const idade = pet.idade ? `${pet.idade} ${pet.idade === 1 ? 'ano' : 'anos'}` : "Idade não informada";
+        
+        const petCard = document.createElement('div');
+        petCard.className = 'pet-card';
+        
+        // Usar a URL da imagem do pet se existir, senão usar um placeholder
+        const imageUrl = pet.foto || `/api/placeholder/300/300?id=${pet.id}`;
+        
+        petCard.innerHTML = `
+            <div class="pet-image">
+                <img src="${imageUrl}" alt="${pet.nome}">
+            </div>
+            <div class="pet-info">
+                <h3 class="pet-name">${pet.nome}</h3>
+                <p class="pet-breed">${pet.raca || 'Sem raça definida'} • ${idade}</p>
+                <p class="pet-location">${pet.cidade || ''}, ${pet.estado || ''}</p>
+                <div class="pet-actions">
+                    <a href="#" class="pet-action-btn view-details" data-id="${pet.id}">Ver Detalhes</a>
+                    <button class="favorite-btn active" data-id="${pet.id}">❤</button>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(petCard);
+        
+        // Adicionar evento ao botão de ver detalhes
+        const viewDetailsBtn = petCard.querySelector('.view-details');
+        if (viewDetailsBtn) {
+            viewDetailsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Abrir modal com detalhes do pet (você pode implementar isso depois)
+                showNotification(`Detalhes do pet ID: ${pet.id} serão implementados em breve.`);
+            });
+        }
+        
+        // Adicionar evento ao botão de favorito
+        const favoriteBtn = petCard.querySelector('.favorite-btn');
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', function() {
+                const petId = this.getAttribute('data-id');
+                removeFavorite(petId, petCard);
+            });
+        }
+    }
+
+    // Função para remover um pet dos favoritos
+    async function removeFavorite(petId, petCard) {
+        const currentUser = sessionStorage.getItem('currentUser') ? JSON.parse(sessionStorage.getItem('currentUser')) : null;
+        
+        if (!currentUser || !currentUser.id) {
+            showNotification('Você precisa estar logado para gerenciar seus favoritos.', 'error');
+            return;
+        }
+        
+        try {
+            // Remover o pet dos favoritos no Supabase
+            const { error } = await supabase
+                .from('favoritos')
+                .delete()
+                .eq('id_usu', currentUser.id)
+                .eq('id_pet', petId);
+                
+            if (error) {
+                throw error;
+            }
+            
+            // Remover o card visualmente da página
+            if (petCard && petCard.parentNode) {
+                petCard.parentNode.removeChild(petCard);
+            }
+            
+            // Verificar se ainda existem pets favoritos
+            const favoritePetsGrid = document.getElementById('favoritePetsGrid');
+            if (favoritePetsGrid && favoritePetsGrid.children.length === 0) {
+                favoritePetsGrid.innerHTML = '<div class="no-favorites">Você não tem mais pets favoritos.</div>';
+            }
+            
+            showNotification('Pet removido dos favoritos!');
+        } catch (err) {
+            console.error('Erro ao remover favorito:', err);
+            showNotification('Erro ao remover o pet dos favoritos.', 'error');
+        }
+    }
     
     // Helper function to show notifications
     function showNotification(message, type = 'success') {
@@ -580,80 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000);
     }
     
-    // Sample data loading functions
-    function loadFavoritePets() {
-        const favoritePetsGrid = document.getElementById('favoritePetsGrid');
-        
-        if (!favoritePetsGrid) return;
-        
-        // Sample favorite pets data
-        const favoritePets = [
-            {
-                id: 3,
-                name: 'Thor',
-                image: 'dog2.jpg',
-                breed: 'Golden Retriever',
-                age: '2 anos',
-                size: 'Porte Grande'
-            },
-            {
-                id: 4,
-                name: 'Nina',
-                image: 'cat2.jpg',
-                breed: 'Persa',
-                age: '4 anos',
-                size: 'Porte Pequeno'
-            },
-            {
-                id: 5,
-                name: 'Rex',
-                image: 'dog3.jpg',
-                breed: 'Pastor Alemão',
-                age: '1 ano',
-                size: 'Porte Grande'
-            }
-        ];
-        
-        // Create pet cards
-        favoritePets.forEach(pet => {
-            const petCard = document.createElement('div');
-            petCard.className = 'pet-card';
-            petCard.innerHTML = `
-                <div class="pet-image">
-                    <img src="${pet.image}" alt="${pet.name}">
-                </div>
-                <div class="pet-info">
-                    <h3 class="pet-name">${pet.name}</h3>
-                    <p class="pet-breed">${pet.breed}</p>
-                    <p class="pet-age">${pet.age}</p>
-                    <span class="pet-size">${pet.size}</span>
-                    <div class="pet-actions">
-                        <a href="#" class="pet-action-btn">Ver Detalhes</a>
-                        <button class="favorite-btn active" data-id="${pet.id}">❤</button>
-                    </div>
-                </div>
-            `;
-            
-            favoritePetsGrid.appendChild(petCard);
-        });
-        
-        // Add event listeners for favorite buttons
-        const favoriteButtons = favoritePetsGrid.querySelectorAll('.favorite-btn');
-        favoriteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const petId = this.getAttribute('data-id');
-                this.classList.toggle('active');
-                
-                if (!this.classList.contains('active')) {
-                    // Remove the pet card from favorites
-                    this.closest('.pet-card').remove();
-                    showNotification(`Pet removido dos favoritos.`);
-                }
-            });
-        });
-    }
-    
-    // Add CSS for notifications
+    // Add CSS for notifications and other styles
     const style = document.createElement('style');
     style.textContent = `
         .notification {
@@ -691,6 +780,20 @@ document.addEventListener("DOMContentLoaded", () => {
             color: #666;
         }
         
+        .error-message, .no-favorites {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+        }
+        
+        .error-message {
+            color: #f44336;
+        }
+        
         .pet-location {
             color: #666;
             font-size: 0.9em;
@@ -704,6 +807,18 @@ document.addEventListener("DOMContentLoaded", () => {
         
         .pet-action-btn.delete-pet:hover {
             background-color: #ff0000;
+        }
+        
+        .favorite-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ff4f4f;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .favorite-btn:hover {
+            transform: scale(1.2);
         }
     `;
     document.head.appendChild(style);
