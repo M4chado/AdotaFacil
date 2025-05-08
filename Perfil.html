@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="perfil.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
-    <script src="header-loader.js"></script>
     <script src="perfil.js" defer></script>
 </head>
 <body>
@@ -26,8 +25,7 @@
                         <li class="profile-nav-item active" data-section="personal-info">Informações Pessoais</li>
                         <li class="profile-nav-item" data-section="my-pets">Meus Pets</li>
                         <li class="profile-nav-item" data-section="favorite-pets">Pets Favoritos</li>
-                        <li class="profile-nav-item" data-section="adoption-history">Histórico de Adoções</li>
-                        <li class="profile-nav-item" data-section="settings">Configurações</li>
+                        <li class="profile-nav-item" data-section="settings">Alterar Senha</li>
                     </ul>
                 </div>
             </div>
@@ -49,24 +47,12 @@
                             <input type="tel" id="phone" name="phone" value="(64) 99999-9999">
                         </div>
                         <div class="form-group">
-                            <label for="address">Endereço</label>
-                            <input type="text" id="address" name="address" value="Rua das Flores, 123">
-                        </div>
-                        <div class="form-group">
                             <label for="city">Cidade</label>
                             <input type="text" id="city" name="city" value="Rio Verde">
                         </div>
                         <div class="form-group">
                             <label for="state">Estado</label>
                             <input type="text" id="state" name="state" value="Goiás">
-                        </div>
-                        <div class="form-group">
-                            <label for="zipCode">CEP</label>
-                            <input type="text" id="zipCode" name="zipCode" value="75900-000">
-                        </div>
-                        <div class="form-group">
-                            <label for="bio">Sobre Mim</label>
-                            <textarea id="bio" name="bio" rows="4">Amante de animais e entusiasta da adoção responsável. Tenho dois cães e um gato adotados.</textarea>
                         </div>
                         <button type="submit" class="button">Salvar Alterações</button>
                     </form>
@@ -93,15 +79,8 @@
                     </div>
                 </section>
                 
-                <section class="profile-section" id="adoption-history">
-                    <h2>Histórico de Adoções</h2>
-                    <div class="adoption-timeline" id="adoptionTimeline">
-                        <!-- Adoption history will be generated here via JavaScript -->
-                    </div>
-                </section>
-                
                 <section class="profile-section" id="settings">
-                    <h2>Configurações</h2>
+                    <h2>Alterar Senha</h2>
                     <form class="profile-form" id="settingsForm">
                         <div class="form-group">
                             <label for="currentPassword">Senha Atual</label>
@@ -116,21 +95,7 @@
                             <input type="password" id="confirmPassword" name="confirmPassword">
                         </div>
                         
-                        <h3>Preferências de Notificação</h3>
-                        <div class="form-group checkbox-group">
-                            <input type="checkbox" id="emailNotifications" name="emailNotifications" checked>
-                            <label for="emailNotifications">Receber notificações por email</label>
-                        </div>
-                        <div class="form-group checkbox-group">
-                            <input type="checkbox" id="newPetNotifications" name="newPetNotifications" checked>
-                            <label for="newPetNotifications">Novos pets disponíveis para adoção</label>
-                        </div>
-                        <div class="form-group checkbox-group">
-                            <input type="checkbox" id="adoptionUpdates" name="adoptionUpdates" checked>
-                            <label for="adoptionUpdates">Atualizações sobre adoções</label>
-                        </div>
-                        
-                        <button type="submit" class="button">Salvar Configurações</button>
+                        <button type="submit" class="button">Salvar Nova Senha</button>
                     </form>
                 </section>
             </div>

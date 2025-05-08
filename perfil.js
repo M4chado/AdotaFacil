@@ -1,4 +1,37 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Função para fazer upload de imagem para o Supabase Storage
+    async function uploadProfileImage(file, userId) {
+        // Gera um nome de arquivo único baseado no ID do usuário e timestamp
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${userId}_${Date.now()}.${fileExt}`;
+        const filePath = `profile_images/${fileName}`;
+        
+        try {
+            // Upload do arquivo para o bucket "profile_images"
+            const { data, error } = await supabase.storage
+                .from('profile_images')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                });
+                
+            if (error) {
+                throw error;
+            }
+            
+            // Obter a URL pública do arquivo
+            const { data: urlData } = supabase.storage
+                .from('profile_images')
+                .getPublicUrl(filePath);
+                
+            // Retorna a URL pública da imagem
+            return urlData.publicUrl;
+        } catch (error) {
+            console.error('Erro no upload da imagem:', error);
+            throw error;
+        }
+    }
+
     // Verificar se o Supabase está disponível
     if (typeof supabase === 'undefined') {
         console.warn('Supabase ainda não está inicializado. Aguardando inicialização...');
@@ -53,9 +86,51 @@ document.addEventListener("DOMContentLoaded", () => {
             // Preencher os campos do perfil com os dados do usuário
             populateUserData(userData);
             
+            // Carregar a foto do perfil
+            loadProfilePhoto(userData.id);
+            
             // Carregar os pets do usuário
             loadUserPets(userData.id);
         }
+    }
+    
+    // Carregar a foto de perfil do usuário
+    function loadProfilePhoto(userId) {
+        const profileImage = document.getElementById('profileImage');
+        if (!profileImage) return;
+        
+        // Verificar se o usuário tem uma foto no sessionStorage
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (currentUser && currentUser.foto) {
+            profileImage.src = currentUser.foto;
+            return;
+        }
+        
+        // Se não tiver no sessionStorage, verificar no Supabase
+        supabase
+            .from('usuarios')
+            .select('foto')
+            .eq('id', userId)
+            .single()
+            .then(response => {
+                const { data, error } = response;
+                
+                if (error) {
+                    console.error('Erro ao carregar foto de perfil:', error);
+                    return;
+                }
+                
+                if (data && data.foto) {
+                    profileImage.src = data.foto;
+                    
+                    // Atualizar o sessionStorage
+                    const updatedUser = {...currentUser, foto: data.foto};
+                    sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                }
+            })
+            .catch(err => {
+                console.error('Erro na consulta da foto:', err);
+            });
     }
     
     // Preencher os campos do perfil com os dados do usuário
@@ -66,7 +141,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (userData.email) {
             document.getElementById('email').value = userData.email;
         }
-        // Adicionar outros campos conforme disponibilidade dos dados
+        if (userData.telefone) {
+            document.getElementById('phone').value = userData.telefone;
+        }
+        if (userData.cidade) {
+            document.getElementById('city').value = userData.cidade;
+        }
+        if (userData.estado) {
+            document.getElementById('state').value = userData.estado;
+        }
     }
     
     // Carregar os pets cadastrados pelo usuário a partir do Supabase
@@ -249,9 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showNotification('Falha na comunicação com o servidor.', 'error');
             });
     }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
+    
     // Navigation functionality
     const navItems = document.querySelectorAll('.profile-nav-item');
     const profileSections = document.querySelectorAll('.profile-section');
@@ -273,31 +354,136 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Handle form submissions
+    // Handle form submissions - Personal Info Form
     const personalInfoForm = document.getElementById('personalInfoForm');
     if (personalInfoForm) {
         personalInfoForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Here you would normally send data to a server
-            showNotification('Informações pessoais atualizadas com sucesso!');
+            
+            // Obter os dados do formulário
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            
+            // Obter o ID do usuário atual
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser || !currentUser.id) {
+                showNotification('Usuário não identificado. Faça login novamente.', 'error');
+                return;
+            }
+            
+            // Atualizar os dados no Supabase
+            supabase
+                .from('usuarios')
+                .update({
+                    nome: fullName,
+                    email: email,
+                    telefone: phone,
+                    cidade: city,
+                    estado: state
+                })
+                .eq('id', currentUser.id)
+                .then(response => {
+                    const { data, error } = response;
+                    
+                    if (error) {
+                        console.error('Erro ao atualizar informações:', error);
+                        showNotification('Erro ao salvar informações pessoais.', 'error');
+                        return;
+                    }
+                    
+                    // Atualizar o sessionStorage
+                    const updatedUser = {
+                        ...currentUser,
+                        nome: fullName,
+                        email: email,
+                        telefone: phone,
+                        cidade: city,
+                        estado: state
+                    };
+                    sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                    
+                    showNotification('Informações pessoais atualizadas com sucesso!');
+                    
+                    // Atualizar o nome no menu de navegação
+                    const userGreeting = document.querySelector('.user-greeting');
+                    if (userGreeting) {
+                        userGreeting.textContent = `Olá, ${fullName.split(' ')[0]}`;
+                    }
+                })
+                .catch(err => {
+                    console.error('Erro na requisição:', err);
+                    showNotification('Falha na comunicação com o servidor.', 'error');
+                });
         });
     }
     
+    // Handle form submissions - Settings Form (Change Password)
     const settingsForm = document.getElementById('settingsForm');
     if (settingsForm) {
         settingsForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
-            if (newPassword && newPassword !== confirmPassword) {
+            // Validações básicas
+            if (!currentPassword) {
+                showNotification('A senha atual é obrigatória.', 'error');
+                return;
+            }
+            
+            if (!newPassword) {
+                showNotification('A nova senha é obrigatória.', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
                 showNotification('As senhas não coincidem!', 'error');
                 return;
             }
             
-            // Here you would normally send data to a server
-            showNotification('Configurações atualizadas com sucesso!');
+            // Obter o ID do usuário atual
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser || !currentUser.id) {
+                showNotification('Usuário não identificado. Faça login novamente.', 'error');
+                return;
+            }
+            
+            // Verificar a senha atual (simulação - em uma implementação real, você verificaria no servidor)
+            // Em um sistema real, você enviaria a senha atual para verificação no backend
+            // Aqui, estamos apenas simulando a mudança de senha
+            
+            // Atualizar a senha no Supabase
+            supabase
+                .from('usuarios')
+                .update({
+                    senha: newPassword  // Em um sistema real, você nunca armazenaria senhas em texto simples
+                })
+                .eq('id', currentUser.id)
+                .then(response => {
+                    const { error } = response;
+                    
+                    if (error) {
+                        console.error('Erro ao atualizar senha:', error);
+                        showNotification('Erro ao alterar senha.', 'error');
+                        return;
+                    }
+                    
+                    // Limpar os campos
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    
+                    showNotification('Senha alterada com sucesso!');
+                })
+                .catch(err => {
+                    console.error('Erro na requisição:', err);
+                    showNotification('Falha na comunicação com o servidor.', 'error');
+                });
         });
     }
     
@@ -305,25 +491,61 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
     const profileImage = document.getElementById('profileImage');
     
-    if (uploadPhotoBtn) {
+    if (uploadPhotoBtn && profileImage) {
         uploadPhotoBtn.addEventListener('click', function() {
-            // Simulating a file input click
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
             fileInput.accept = 'image/*';
             
-            fileInput.addEventListener('change', function(e) {
+            fileInput.addEventListener('change', async function(e) {
                 if (e.target.files.length > 0) {
                     const file = e.target.files[0];
                     
-                    // Create a FileReader to read the image
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        profileImage.src = event.target.result;
-                        showNotification('Foto de perfil atualizada com sucesso!');
-                    };
+                    // Verificar o tamanho do arquivo (limite de 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showNotification('A imagem é muito grande. O tamanho máximo é de 5MB.', 'error');
+                        return;
+                    }
                     
-                    reader.readAsDataURL(file);
+                    // Mostrar indicador de carregamento
+                    showNotification('Enviando imagem...', 'info');
+                    
+                    // Obter o ID do usuário atual
+                    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+                    if (!currentUser || !currentUser.id) {
+                        showNotification('Usuário não identificado. Faça login novamente.', 'error');
+                        return;
+                    }
+                    
+                    try {
+                        // Fazer o upload da imagem para o Storage
+                        const imageUrl = await uploadProfileImage(file, currentUser.id);
+                        
+                        // Mostrar a imagem no perfil
+                        profileImage.src = imageUrl;
+                        
+                        // Atualizar a URL da foto no banco de dados
+                        const { error } = await supabase
+                            .from('usuarios')
+                            .update({ foto: imageUrl })
+                            .eq('id', currentUser.id);
+                            
+                        if (error) {
+                            throw error;
+                        }
+                        
+                        // Atualizar o sessionStorage
+                        const updatedUser = {
+                            ...currentUser,
+                            foto: imageUrl
+                        };
+                        sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                        
+                        showNotification('Foto de perfil atualizada com sucesso!');
+                    } catch (error) {
+                        console.error('Erro ao processar upload:', error);
+                        showNotification('Erro ao fazer upload da imagem.', 'error');
+                    }
                 }
             });
             
@@ -333,9 +555,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Carregar exemplos de pets favoritos
     loadFavoritePets();
-    
-    // Carregar exemplos de histórico de adoção
-    loadAdoptionHistory();
     
     // Helper function to show notifications
     function showNotification(message, type = 'success') {
@@ -431,48 +650,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     showNotification(`Pet removido dos favoritos.`);
                 }
             });
-        });
-    }
-    
-    function loadAdoptionHistory() {
-        const adoptionTimeline = document.getElementById('adoptionTimeline');
-        
-        if (!adoptionTimeline) return;
-        
-        // Sample adoption history data
-        const adoptionHistory = [
-            {
-                date: '15/02/2025',
-                petName: 'Bella',
-                petType: 'Cachorro',
-                petImage: 'dog4.jpg',
-                status: 'Adoção Finalizada',
-                details: 'Adotou um lindo filhote de Beagle.'
-            },
-            {
-                date: '10/01/2025',
-                petName: 'Oliver',
-                petType: 'Gato',
-                petImage: 'cat3.jpg',
-                status: 'Adoção Finalizada',
-                details: 'Adotou um gatinho resgatado de 6 meses de idade.'
-            }
-        ];
-        
-        // Create timeline items
-        adoptionHistory.forEach(item => {
-            const timelineItem = document.createElement('div');
-            timelineItem.className = 'timeline-item';
-            timelineItem.innerHTML = `
-                <div class="timeline-date">${item.date}</div>
-                <div class="timeline-content">
-                    <h3>${item.petName} - ${item.petType}</h3>
-                    <p>${item.status}</p>
-                    <p>${item.details}</p>
-                </div>
-            `;
-            
-            adoptionTimeline.appendChild(timelineItem);
         });
     }
     
