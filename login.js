@@ -1,3 +1,4 @@
+// login.js
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('login-form');
     const successMessage = document.getElementById('success-message');
@@ -14,7 +15,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const redirectPage = urlParams.get('redirect');
 
     // Verificar se já existe uma sessão ativa
-    checkSession();
+    const redirectTo = checkSession(sessionStorage.getItem('currentUser'), redirectPage);
+    if (redirectTo) {
+        window.location.href = redirectTo;
+    }
 
     // Redirecionar para a página de cadastro
     redirectRegisterBtn.addEventListener('click', () => {
@@ -56,97 +60,95 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (isValid) {
             // Consultar diretamente a tabela usuarios para o login
-            verificarCredenciais(email.value, password.value);
+            handleLogin(email.value, password.value, redirectPage);
         }
     });
-
-    // Função para verificar se já existe uma sessão ativa
-    function checkSession() {
-        const currentUser = sessionStorage.getItem('currentUser');
-        if (currentUser) {
-            // Se houver uma página para redirecionar, vá para ela
-            if (redirectPage) {
-                window.location.href = redirectPage;
-            } else {
-                // Senão, vá para a página inicial
-                window.location.href = 'index.html';
-            }
-        }
-    }
-    
-    // Função para verificar as credenciais no Supabase
-    function verificarCredenciais(email, senha) {
-        try {
-            // Verificar se o objeto supabase está disponível
-            if (typeof supabase === 'undefined') {
-                console.error('Erro: Supabase não está inicializado.');
-                notificarErro('Erro de Conexão', 'Não foi possível conectar ao servidor. Tente novamente mais tarde.');
-                return;
-            }
-
-            // Mostrar notificação de carregamento
-            const loadingNotification = notificarInfo('Verificando', 'Validando suas credenciais...', 0);
-
-            // Consultar a tabela 'usuarios' no Supabase
-            supabase
-                .from('usuarios')
-                .select('*')
-                .eq('email', email)
-                .eq('senha', senha)
-                .then(response => {
-                    const { data, error } = response;
-                    
-                    // Fechar notificação de carregamento
-                    fecharNotificacao(loadingNotification);
-                    
-                    // Exibir mensagem de sucesso na conexão com o Supabase
-                    console.log('✅ Consulta ao Supabase realizada com sucesso!');
-
-                    if (error) {
-                        console.error('Erro ao fazer login:', error);
-                        notificarErro('Erro no Login', 'Houve um problema ao verificar suas credenciais. Tente novamente.');
-                        return;
-                    }
-                    
-                    // Verificar se encontrou algum usuário
-                    if (!data || data.length === 0) {
-                        notificarErro('Credenciais Inválidas', 'Email ou senha incorretos. Verifique e tente novamente.');
-                        return;
-                    }
-
-                    // Login bem-sucedido
-                    console.log('✅ Login realizado com sucesso!');
-                    
-                    // Guardar info do usuário na sessão
-                    sessionStorage.setItem('currentUser', JSON.stringify(data[0]));
-
-                    // Mostrar notificação de sucesso
-                    notificarSucesso('Login Bem-sucedido', `Olá, ${data[0].nome.split(' ')[0]}! Bem-vindo(a) de volta.`);
-                    
-                    // Redirecionar para a página apropriada após um curto delay
-                    setTimeout(() => {
-                        if (redirectPage) {
-                            window.location.href = redirectPage;
-                        } else {
-                            window.location.href = 'index.html';
-                        }
-                    }, 1500);
-                })
-                .catch(err => {
-                    // Fechar notificação de carregamento
-                    fecharNotificacao(loadingNotification);
-                    
-                    console.error('Erro na consulta:', err);
-                    notificarErro('Falha na Comunicação', 'Ocorreu um erro inesperado. Tente novamente mais tarde.');
-                });
-        } catch (err) {
-            console.error('Erro inesperado:', err);
-            notificarErro('Erro Inesperado', 'Ocorreu um problema ao processar sua solicitação.');
-        }
-    }
 });
+
+// Funções extraídas para facilitar testes
 
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
+}
+
+function checkSession(currentUser, redirectPage) {
+    if (currentUser) {
+        if (redirectPage) {
+            return redirectPage;
+        } else {
+            return 'index.html';
+        }
+    }
+    return null;
+}
+
+function handleLogin(email, senha, redirectPage) {
+    try {
+        // Verificar se o objeto supabase está disponível
+        if (typeof supabase === 'undefined') {
+            console.error('Erro: Supabase não está inicializado.');
+            notificarErro('Erro de Conexão', 'Não foi possível conectar ao servidor. Tente novamente mais tarde.');
+            return;
+        }
+
+        // Mostrar notificação de carregamento
+        const loadingNotification = notificarInfo('Verificando', 'Validando suas credenciais...', 0);
+
+        // Consultar a tabela 'usuarios' no Supabase
+        supabase
+            .from('usuarios')
+            .select('*')
+            .eq('email', email)
+            .eq('senha', senha)
+            .then(response => {
+                const { data, error } = response;
+                
+                // Fechar notificação de carregamento
+                fecharNotificacao(loadingNotification);
+                
+                // Exibir mensagem de sucesso na conexão com o Supabase
+                console.log('✅ Consulta ao Supabase realizada com sucesso!');
+
+                if (error) {
+                    console.error('Erro ao fazer login:', error);
+                    notificarErro('Erro no Login', 'Houve um problema ao verificar suas credenciais. Tente novamente.');
+                    return;
+                }
+                
+                // Verificar se encontrou algum usuário
+                if (!data || data.length === 0) {
+                    notificarErro('Credenciais Inválidas', 'Email ou senha incorretos. Verifique e tente novamente.');
+                    return;
+                }
+
+                // Login bem-sucedido
+                console.log('✅ Login realizado com sucesso!');
+                
+                // Guardar info do usuário na sessão
+                sessionStorage.setItem('currentUser', JSON.stringify(data[0]));
+
+                // Mostrar notificação de sucesso
+                notificarSucesso('Login Bem-sucedido', `Olá, ${data[0].nome.split(' ')[0]}! Bem-vindo(a) de volta.`);
+                
+                // Redirecionar para a página apropriada após um curto delay
+                setTimeout(() => {
+                    if (redirectPage) {
+                        window.location.href = redirectPage;
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }, 1500);
+            })
+            .catch(err => {
+                // Fechar notificação de carregamento
+                fecharNotificacao(loadingNotification);
+                
+                console.error('Erro na consulta:', err);
+                notificarErro('Falha na Comunicação', 'Ocorreu um erro inesperado. Tente novamente mais tarde.');
+            });
+    } catch (err) {
+        console.error('Erro inesperado:', err);
+        notificarErro('Erro Inesperado', 'Ocorreu um problema ao processar sua solicitação.');
+    }
 }
