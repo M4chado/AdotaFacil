@@ -7,15 +7,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (typeof supabase === 'undefined') {
         console.error('Supabase não está definido. Verifique se o script foi carregado corretamente.');
-        notificarErro('Erro de Conexão', 'Não foi possível estabelecer conexão com o servidor.');
+        if (typeof notificarErro === 'function') {
+            notificarErro('Erro de Conexão', 'Não foi possível estabelecer conexão com o servidor.');
+        }
         return;
     } else {
         console.log('✅ Conexão com o Supabase estabelecida com sucesso!');
     }
 
-    redirectLoginBtn.addEventListener('click', () => {
-        window.location.href = 'login.html';
-    });
+    if (redirectLoginBtn) {
+        redirectLoginBtn.addEventListener('click', function() {
+            console.log('Redirecionando para login.html');
+            window.location.href = 'login.html';
+        });
+    }
 
     registerForm.addEventListener('submit', function(e) {
         e.preventDefault();

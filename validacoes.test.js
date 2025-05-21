@@ -1,5 +1,5 @@
 // validacoes.test.js
-const { validateEmail, validatePhone } = require('./validacoes');
+const { validateEmail, validatePhone } = require('./validacoes.common');
 
 describe('Função validateEmail', () => {
     test('Deve retornar true para email válido', () => {
