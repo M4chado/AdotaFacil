@@ -3,9 +3,12 @@
     "@supabase/supabase-js": "^2.49.4"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "jsdom": "^23.0.0"
   },
   "scripts": {
-  "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   }
 }
