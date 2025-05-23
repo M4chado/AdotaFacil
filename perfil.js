@@ -1,3 +1,20 @@
+function populateUserData(userData, documentRef = document) {
+    if (userData.nome) {
+        documentRef.getElementById('fullName').value = userData.nome;
+    }
+    if (userData.email) {
+        documentRef.getElementById('email').value = userData.email;
+    }
+    if (userData.telefone) {
+        documentRef.getElementById('phone').value = userData.telefone;
+    }
+    if (userData.cidade) {
+        documentRef.getElementById('city').value = userData.cidade;
+    }
+    if (userData.estado) {
+        documentRef.getElementById('state').value = userData.estado;
+    }
+}
 document.addEventListener("DOMContentLoaded", () => {
     // Função para fazer upload de imagem para o Supabase Storage
     async function uploadProfileImage(file, userId) {
@@ -134,25 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(err => {
                 console.error('Erro na consulta da foto:', err);
             });
-    }
-    
-    // Preencher os campos do perfil com os dados do usuário
-    function populateUserData(userData) {
-        if (userData.nome) {
-            document.getElementById('fullName').value = userData.nome;
-        }
-        if (userData.email) {
-            document.getElementById('email').value = userData.email;
-        }
-        if (userData.telefone) {
-            document.getElementById('phone').value = userData.telefone;
-        }
-        if (userData.cidade) {
-            document.getElementById('city').value = userData.cidade;
-        }
-        if (userData.estado) {
-            document.getElementById('state').value = userData.estado;
-        }
     }
     
     // Carregar os pets cadastrados pelo usuário a partir do Supabase
@@ -1133,4 +1131,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     `;
     document.head.appendChild(modalStyle);
+    // Expor funções para testes (Jest)
 });
+ if (typeof module !== 'undefined' && module.exports) {
+        module.exports = {
+            populateUserData
+        };
+    }
